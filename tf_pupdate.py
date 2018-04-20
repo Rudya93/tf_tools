@@ -25,7 +25,7 @@ print("Terraform provider update tool - version:",tfver,"- Arnvid L. Karstad / B
 print("Running updates for",p_os,p_arch,"/",p_tfarch)
 
 config = configparser.ConfigParser()
-config.read('tf_gupdate.ini')
+config.read('tf_pupdate.ini')
 config.sections()
 
 tmp_dir =  os.path.expanduser(config['PATHS'].get('tmp_dir'))
