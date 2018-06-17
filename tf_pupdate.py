@@ -72,23 +72,18 @@ for option in config.options('PROVIDERS'):
     if debug : print(tfp_url)
     if debug : print(tfp_lfilename)
     tfp_lfile = Path(plugins_dir+"/"+tfp_lfilename)
-    try:
-      tfp_abs_path = tfp_lfile.resolve()
-    except FileNotFoundError:
+    if debug : print(tfp_lfile)
+    if os.path.isfile(tfp_lfile): 
+      print("Local file exists:",tfp_lfilename,"not upgrading")
+    else:
       print("Local file does not exist:",tfp_lfilename)
-      tfp_lzip = Path(tfp_lzippath)
-      try:
-        tfp_abs_zpath = tfp_lzip.resolve()
-      except FileNotFoundError:
+      if os.path.isfile(tfp_lzippath): 
+         print("Local zip file does exist: "+tfp_filename+"_"+p_os+"_"+p_tfarch+".zip")
+      else:
         print("Local zip file does not exist: "+tfp_filename+"_"+p_os+"_"+p_tfarch+".zip")
         urllib.request.urlretrieve(tfp_url, tfp_lzippath)
-      else:
-        print("Local zip file does exist: "+tfp_filename+"_"+p_os+"_"+p_tfarch+".zip")
       zfile = zipfile.ZipFile(tfp_lzippath)
       zfile.extract(tfp_lfilename,plugins_dir)
       zfile.close
-    else:
-      print("Local file exists:",tfp_lfilename,"not upgrading")
-
-
+      os.chmod(tfp_lfile, 0o755)
 
