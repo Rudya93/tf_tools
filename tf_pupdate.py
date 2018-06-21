@@ -7,8 +7,9 @@ from pathlib import Path
 from lxml import html
 import urllib.request
 import zipfile
+import sys
 
-tfver = 0.5
+tfver = 0.6
 debug = False
 p_os      = sys.platform
 p_arch   = platform.architecture()[0]
@@ -23,6 +24,10 @@ def remove_prefix(text, prefix):
 
 print("Terraform provider update tool - version:",tfver,"- Arnvid L. Karstad / Basefarm")
 print("Running updates for",p_os,p_arch,"/",p_tfarch)
+
+if sys.version_info<(3,6,0):
+  sys.stderr.write("You need python 3.6 or later to run this script\n")
+  exit(1)
 
 config = configparser.ConfigParser()
 config.read('tf_pupdate.ini')
@@ -75,7 +80,7 @@ for option in config.options('PROVIDERS'):
     if debug : print(tfp_lfilename)
     tfp_lfile = Path(plugins_dir+"/"+tfp_lfilename)
     if debug : print(tfp_lfile)
-    if os.path.isfile(tfp_lfile): 
+    if os.path.isfile(tfp_lfile):
       print("Local file exists:",tfp_lfilename,"not upgrading")
     else:
       print("Local file does not exist:",tfp_lfilename)
