@@ -3,6 +3,7 @@ import requests
 import platform
 import os
 import sys
+import shutil
 from pathlib import Path
 from lxml import html
 import urllib.request
@@ -124,7 +125,19 @@ else:
  zfile.close
  if os.path.isfile(tmp_dir+"/terraform"):
    if os.path.isfile(tf_dir+"/terraform"): os.remove(tf_dir+"/terraform")
-   os.rename(tmp_dir+"/terraform",tfp_lfile)
-   os.chmod(tfp_lfile, 0o755)
-   os.symlink(tfp_lfile,tf_dir+"/terraform")
+   if debug : print(tmp_dir+"/terraform")
+   if debug : print(tfp_lfile)
+   if debug : print(tf_dir+"/terraform")
+   if os.path.isfile(tmp_dir+"/terraform"):
+     shutil.move(tmp_dir+"/terraform",tfp_lfile)
+     if debug : print("File: "+tmp_dir+"/terraform - does exist renaming..")
+   else:
+     if debug : print("File: "+tmp_dir+"/terraform - does not exist cant rename..")
+   if os.path.isfile(tfp_lfile):
+     os.chmod(tfp_lfile, 0o755)
+     os.symlink(tfp_lfile,tf_dir+"/terraform")
+   else:
+     print("File: "+tfp_lfile+" - does not exist - failed to install..")
+
+
 
