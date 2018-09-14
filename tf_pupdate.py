@@ -12,6 +12,8 @@ import sys
 
 tfver = 0.6
 debug = False
+verbose = False
+
 p_os      = sys.platform
 p_arch   = platform.architecture()[0]
 
@@ -66,7 +68,7 @@ print("Checking tf_gupdate.ini for list of activated providers:")
 release_url = config['URLS'].get('release_url')
 for option in config.options('PROVIDERS'):
   if config['PROVIDERS'].getboolean(option):
-    print("Provider:",option,"enabled - checking versions")
+    if verbose : print("Provider:",option,"enabled - checking versions")
     provider_url = release_url+option+"/"
     if debug : print("Grabbing list from:",provider_url)
     webcontent = requests.get(provider_url)
@@ -82,13 +84,13 @@ for option in config.options('PROVIDERS'):
     tfp_lfile = Path(plugins_dir+"/"+tfp_lfilename)
     if debug : print(tfp_lfile)
     if os.path.isfile(tfp_lfile):
-      print("Local file exists:",tfp_lfilename,"not upgrading")
+      if verbose: print("Local file exists:",tfp_lfilename,"not upgrading")
     else:
-      print("Local file does not exist:",tfp_lfilename)
+      print("Local file does not exist:",tfp_lfilename, " upgrading")
       if os.path.isfile(tfp_lzippath): 
-        print("Local zip file does exist: "+tfp_filename+"_"+p_os+"_"+p_tfarch+".zip")
+        if verbose: print("Local zip file does exist: "+tfp_filename+"_"+p_os+"_"+p_tfarch+".zip - skipping download.")
       else:
-        print("Local zip file does not exist: "+tfp_filename+"_"+p_os+"_"+p_tfarch+".zip")
+        if verbose: print("Local zip file does not exist: "+tfp_filename+"_"+p_os+"_"+p_tfarch+".zip")
         urllib.request.urlretrieve(tfp_url, tfp_lzippath)
       zfile = zipfile.ZipFile(tfp_lzippath)
       zfile.extract(tfp_lfilename,plugins_dir)
@@ -111,11 +113,11 @@ if debug : print(tfp_lfilename)
 tfp_lfile = Path(tf_dir+"/"+tfp_lfilename)
 if debug : print(tfp_lfile)
 if os.path.isfile(tfp_lfile):
-  print("Local file exists:",tfp_lfilename,"not upgrading")
+ if verbose: print("Local file exists:",tfp_lfilename,"not upgrading")
 else:
- print("Local file does not exist:",tfp_lfilename)
+ print("Local file does not exist:",tfp_lfilename," upgrading.")
  if os.path.isfile(tfp_lzippath):
-    print("Local zip file does exist: "+tfp_filename+"_"+p_os+"_"+p_tfarch+".zip")
+    if verbose: print("Local zip file does exist: "+tfp_filename+"_"+p_os+"_"+p_tfarch+".zip")
  else:
     print("Local zip file does not exist: "+tfp_filename+"_"+p_os+"_"+p_tfarch+".zip")
     urllib.request.urlretrieve(tfp_url, tfp_lzippath)
@@ -137,7 +139,7 @@ else:
      os.chmod(tfp_lfile, 0o755)
      os.symlink(tfp_lfile,tf_dir+"/terraform")
    else:
-     print("File: "+tfp_lfile+" - does not exist - failed to install..")
+     print("Error - File: "+tfp_lfile+" - does not exist - failed to install..")
 
 
 

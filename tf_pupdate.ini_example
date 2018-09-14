@@ -8,12 +8,12 @@ tf_dir=/opt/terraform
 
 [PROVIDERS]
 terraform-provider-alicloud = no
-terraform-provider-archive = no
+terraform-provider-archive = yes
 terraform-provider-arukas = no
 terraform-provider-atlas = no
 terraform-provider-aws = yes
-terraform-provider-azure = no
-terraform-provider-azurerm = no
+terraform-provider-azure = yes
+terraform-provider-azurerm = yes
 terraform-provider-bitbucket = no
 terraform-provider-chef = no
 terraform-provider-circonus = no
