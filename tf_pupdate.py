@@ -9,6 +9,7 @@ from lxml import html
 import urllib.request
 import zipfile
 import sys
+import re
 
 tfver = 0.6
 debug = False
@@ -103,7 +104,11 @@ webcontent = requests.get(tf_url)
 if debug : print(webcontent)
 html_content = html.fromstring(webcontent.content)
 nodes = html_content.xpath('/html/body/ul/li/a/text()')
-tfp_filename=nodes[1]
+for x in range(1,10,1):
+   nonrelease = ["alpha","beta"]
+   tfp_filename=nodes[x]
+   if not re.compile("|".join(nonrelease),re.IGNORECASE).search(tfp_filename): break
+
 tfp_version=remove_prefix(tfp_filename, "terraform_")
 tfp_lfilename="terraform_"+tfp_version+""
 tfp_url = tf_url+tfp_version+"/"+tfp_filename+"_"+p_os+"_"+p_tfarch+".zip"
