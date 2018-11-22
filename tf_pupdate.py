@@ -11,7 +11,7 @@ import zipfile
 import sys
 import re
 
-tfver = 0.6
+tfver = 0.7
 debug = False
 verbose = False
 
