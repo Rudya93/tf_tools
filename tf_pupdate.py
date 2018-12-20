@@ -26,7 +26,7 @@ else:
 def remove_prefix(text, prefix):
     return text[text.startswith(prefix) and len(prefix):]
 
-print("Terraform provider update tool - version:",tfver,"- Arnvid L. Karstad / Basefarm")
+print("Terraform main and provider update tool - version:",tfver,"- Arnvid L. Karstad / Basefarm")
 print("Running updates for",p_os,p_arch,"/",p_tfarch)
 
 if sys.version_info<(3,6,0):
