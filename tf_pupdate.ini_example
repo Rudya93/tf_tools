@@ -68,7 +68,7 @@ terraform-provider-nomad = no
 terraform-provider-ns1 = no
 terraform-provider-nsxt = no
 terraform-provider-null = no
-terraform-provider-nutanix
+terraform-provider-nutanix = no
 terraform-provider-oci = no
 terraform-provider-oneandone = no
 terraform-provider-opc = no
