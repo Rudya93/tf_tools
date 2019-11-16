@@ -1,3 +1,3 @@
 #!/bin/bash
-python3.6 tf_pupdate.py
+python3.7 tf_pupdate.py
 
