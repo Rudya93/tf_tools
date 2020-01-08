@@ -12,7 +12,7 @@ import sys
 import re
 import getopt
 
-tfver = 0.8
+tfver = 0.9
 debug = False
 verbose = False
 
