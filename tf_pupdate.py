@@ -10,8 +10,9 @@ import urllib.request
 import zipfile
 import sys
 import re
+import getopt
 
-tfver = 0.7
+tfver = 0.8
 debug = False
 verbose = False
 
@@ -32,6 +33,31 @@ print("Running updates for",p_os,p_arch,"/",p_tfarch)
 if sys.version_info<(3,6,0):
   sys.stderr.write("You need python 3.6 or later to run this script\n")
   exit(1)
+
+fullCmdArguments = sys.argv
+argumentList = fullCmdArguments[1:]
+
+unixOptions = "hdv"
+gnuOptions = ["help","debug","verbose"]
+try:
+    arguments, values = getopt.getopt(argumentList, unixOptions, gnuOptions)
+except getopt.error as err:
+    print (str(err))
+    sys.exit(2)
+
+for currentArgument, currentValue in arguments:
+    if currentArgument in ("-v", "--verbose"):
+        print ("enabling verbose mode.")
+        verbose = True
+    elif currentArgument in ("-h", "--help"):
+        print ("displaying help")
+        print ("-h or --help - this text")
+        print ("-d or --debug - enable debug mode")
+        print ("-v or --verbose - enable verbose mode")
+        exit(1)
+    elif currentArgument in ("-d", "--debug"):
+        print ("enabling debug mode.")
+        debug = True
 
 config = configparser.ConfigParser()
 config.read('tf_pupdate.ini')
@@ -77,25 +103,33 @@ for option in config.options('PROVIDERS'):
     nodes = html_content.xpath('/html/body/ul/li/a/text()')
     tfp_filename=nodes[1]
     tfp_version=remove_prefix(tfp_filename, option+"_")
-    tfp_lfilename=option+"_v"+tfp_version+"_x4"
+    tfp_lfilename=option+"_v"+tfp_version
+    tfp_lfilename_x4=option+"_v"+tfp_version+"_x4"
+    tfp_lfilename_x5=option+"_v"+tfp_version+"_x5"
     tfp_url = provider_url+tfp_version+"/"+tfp_filename+"_"+p_os+"_"+p_tfarch+".zip"
     tfp_lzippath = tmp_dir+"/"+tfp_filename+"_"+p_os+"_"+p_tfarch+".zip"
     if debug : print(tfp_url)
     if debug : print(tfp_lfilename)
     tfp_lfile = Path(plugins_dir+"/"+tfp_lfilename)
-    if debug : print(tfp_lfile)
-    if os.path.isfile(tfp_lfile):
+    tfp_lfile_x4 = Path(plugins_dir+"/"+tfp_lfilename_x4)
+    tfp_lfile_x5 = Path(plugins_dir+"/"+tfp_lfilename_x5) 
+    if debug : print("looking for ",tfp_lfile,".")
+    if (os.path.isfile(tfp_lfile_x4) or os.path.isfile(tfp_lfile_x5)):
       if verbose: print("Local file exists:",tfp_lfilename,"not upgrading")
     else:
-      print("Local file does not exist:",tfp_lfilename, " upgrading")
+      print("Local file does not exist:",tfp_lfilename," upgrading")
       if os.path.isfile(tfp_lzippath): 
         if verbose: print("Local zip file does exist: "+tfp_filename+"_"+p_os+"_"+p_tfarch+".zip - skipping download.")
       else:
         if verbose: print("Local zip file does not exist: "+tfp_filename+"_"+p_os+"_"+p_tfarch+".zip")
         urllib.request.urlretrieve(tfp_url, tfp_lzippath)
       zfile = zipfile.ZipFile(tfp_lzippath)
-      zfile.extract(tfp_lfilename,plugins_dir)
+      zfile.extractall(plugins_dir)
       zfile.close
+      if os.path.isfile(tfp_lfile_x5):
+        tfp_lfile = tfp_lfile_x5  
+      if os.path.isfile(tfp_lfile_x4):
+        tfp_lfile = tfp_lfile_x4
       os.chmod(tfp_lfile, 0o755)
 
 tf_url = release_url+"terraform/"
@@ -145,6 +179,7 @@ else:
      os.symlink(tfp_lfile,tf_dir+"/terraform")
    else:
      print("Error - File: "+tfp_lfile+" - does not exist - failed to install..")
+
 
 
 
