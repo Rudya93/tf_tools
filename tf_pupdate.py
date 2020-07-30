@@ -106,6 +106,7 @@ for option in config.options('PROVIDERS'):
     tfp_lfilename=option+"_v"+tfp_version
     tfp_lfilename_x4=option+"_v"+tfp_version+"_x4"
     tfp_lfilename_x5=option+"_v"+tfp_version+"_x5"
+
     tfp_url = provider_url+tfp_version+"/"+tfp_filename+"_"+p_os+"_"+p_tfarch+".zip"
     tfp_lzippath = tmp_dir+"/"+tfp_filename+"_"+p_os+"_"+p_tfarch+".zip"
     if debug : print(tfp_url)
@@ -114,7 +115,7 @@ for option in config.options('PROVIDERS'):
     tfp_lfile_x4 = Path(plugins_dir+"/"+tfp_lfilename_x4)
     tfp_lfile_x5 = Path(plugins_dir+"/"+tfp_lfilename_x5) 
     if debug : print("looking for ",tfp_lfile,".")
-    if (os.path.isfile(tfp_lfile_x4) or os.path.isfile(tfp_lfile_x5)):
+    if (os.path.isfile(tfp_lfile_x4) or os.path.isfile(tfp_lfile_x5) or os.path.isfile(tfp_lfile)):
       if verbose: print("Local file exists:",tfp_lfilename,"not upgrading")
     else:
       print("Local file does not exist:",tfp_lfilename," upgrading")
@@ -131,6 +132,8 @@ for option in config.options('PROVIDERS'):
       if os.path.isfile(tfp_lfile_x4):
         tfp_lfile = tfp_lfile_x4
       os.chmod(tfp_lfile, 0o755)
+
+exit(0)
 
 tf_url = release_url+"terraform/"
 if debug : print(tf_url)
